@@ -1,0 +1,8 @@
+{
+  "name": "Rabelus WebOS v.10s",
+  "description": "Sistema operacional web de alta performance com design Obsidian Glass.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

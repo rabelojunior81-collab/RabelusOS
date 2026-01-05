@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#000000" />
+    <title>Rabelus WebOS v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              glass: {
+                base: 'var(--glass-base)',
+                panel: 'var(--glass-panel)', 
+                border: 'var(--glass-border)',
+                text: 'var(--glass-text)',      
+                muted: '#64748B',     
+                accent: 'var(--glass-accent)',    
+                accentHover: 'var(--glass-accent-hover)',
+                secondary: '#0F172A',
+                profit: '#10B981',    
+                loss: '#EF4444',      
+              }
+            },
+            fontFamily: {
+              sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+              mono: ['SF Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
+            },
+            boxShadow: {
+              'glass': '0 20px 50px -12px rgba(0, 0, 0, 0.8)',
+              'glass-hover': '0 0 30px -5px var(--glass-shadow-color)',
+              'liquid-border': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255,255,255,0.05)',
+              'dock-tile': '0 10px 20px -5px rgba(0,0,0,0.6), inset 0 1px 0 0 rgba(255,255,255,0.1)'
+            },
+            borderRadius: {
+              'tahoe': '6px', 
+              'dock': '16px',
+            },
+            transitionTimingFunction: {
+              'liquid': 'cubic-bezier(0.2, 0.0, 0.2, 1)', 
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        /* Rabelus Obsidian Palette - Defaults Updated */
+        --glass-accent: #38BDF8; /* Sky 400 */
+        --glass-accent-hover: #0EA5E9;
+        --glass-text: #E2E8F0; /* Slate 200 */
+        
+        /* Sharper, crystallized borders (High Contrast) */
+        --glass-border: rgba(255, 255, 255, 0.2);
+        
+        --glass-shadow-color: rgba(56, 189, 248, 0.1);
+        
+        /* Obsidian Glass Base: dense, monochromatic */
+        /* #0F172A (Slate 900) at 39% opacity */
+        --glass-base: rgba(15, 23, 42, 0.39); 
+        --glass-panel: rgba(255, 255, 255, 0.05);
+        --glass-blur: 7px; 
+        
+        /* Default High Contrast Shadow */
+        text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--glass-accent);
+      }
+      
+      html {
+        height: 100%;
+        height: 100dvh; /* Dynamic viewport height for mobile browsers */
+        overscroll-behavior: none; /* Prevent rubber-banding on Mac/iOS */
+      }
+      
+      body {
+        height: 100%;
+        height: 100dvh;
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        color: var(--glass-text);
+        overflow: hidden; 
+        user-select: none;
+        -webkit-user-select: none; /* Safari touch fix */
+        font-feature-settings: "cv11", "ss01";
+        -webkit-font-smoothing: antialiased;
+        transition: color 0.3s ease;
+        touch-action: none; /* Prevent browser pinch/zoom/scroll gestures globally */
+        overscroll-behavior: none;
+      }
+      
+      /* Liquid Window Base Class */
+      .glass-window {
+        background: var(--glass-base);
+        /* Obsidian Look: No extra saturation, focus on contrast */
+        backdrop-filter: blur(var(--glass-blur)) brightness(1.0);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) brightness(1.0);
+        
+        /* Double border technique for glass thickness simulation */
+        box-shadow: 
+            0 40px 80px -20px rgba(0, 0, 0, 0.8), 
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.1), /* Highlight top edge */
+            inset 0 0 0 1px rgba(255, 255, 255, 0.05); /* Inner cut */
+            
+        border-radius: 8px; /* Tighter radius for Technical look */
+        
+        /* Transition for the minimize/maximize physics */
+        transition: 
+          transform 0.4s cubic-bezier(0.2, 0, 0, 1),
+          opacity 0.3s cubic-bezier(0.2, 0, 0, 1),
+          filter 0.3s ease,
+          width 0.1s linear, 
+          height 0.1s linear;
+        
+        transform-origin: center bottom; /* Animate from bottom */
+        will-change: transform, opacity, filter;
+      }
+
+      /* Noise Texture Overlay for Realism */
+      .glass-texture::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        pointer-events: none;
+        mix-blend-mode: overlay;
+      }
+      
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      }
+
+      /* Minimize Animation States */
+      .window-visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+        pointer-events: auto;
+      }
+
+      /* Tahoe "Liquid Retreat" Animation */
+      .window-minimized {
+        opacity: 0;
+        transform: scale(0.9) translateY(40px); /* Subtle drop */
+        filter: blur(10px); /* Dissolves */
+        pointer-events: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
